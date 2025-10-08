@@ -43,58 +43,105 @@ public class CarController {
 
     // --- ADD CAR ---
     private ResponseDto handleAddCar(RequestDto request) {
-        AddCarRequestDto dto = gson.fromJson(request.getData(), AddCarRequestDto.class);
+        try {
+            if (request.getToken() == null || request.getToken().isEmpty()) {
+                return new ResponseDto(false, "Unauthorized", null);
+            }
 
-        Car car = carService.createCar(dto.getMake(), dto.getModel(), dto.getYear(), dto.getOwnerId());
-        CarResponseDto response = toResponseDto(car);
+            AddCarRequestDto dto = gson.fromJson(request.getData(), AddCarRequestDto.class);
+            Car car = carService.createCar(dto.getMake(), dto.getModel(), dto.getYear(), dto.getOwnerId());
 
-        return new ResponseDto(true, "Car added successfully", gson.toJson(response));
+            CarResponseDto response = toResponseDto(car);
+            return new ResponseDto(true, "Car added successfully", gson.toJson(response));
+        } catch (Exception e) {
+            System.out.println("Error in handleAddCar: " + e.getMessage());
+            throw e;
+        }
     }
 
     // --- UPDATE CAR ---
     private ResponseDto handleUpdateCar(RequestDto request) {
-        UpdateCarRequestDto dto = gson.fromJson(request.getData(), UpdateCarRequestDto.class);
+        try {
+            if (request.getToken() == null || request.getToken().isEmpty()) {
+                return new ResponseDto(false, "Unauthorized", null);
+            }
 
-        Car updated = carService.updateCar(dto.getId(), dto.getMake(), dto.getModel(), dto.getYear());
-        if (updated == null)
-            return new ResponseDto(false, "Car not found", null);
+            UpdateCarRequestDto dto = gson.fromJson(request.getData(), UpdateCarRequestDto.class);
+            Car updated = carService.updateCar(dto.getId(), dto.getMake(), dto.getModel(), dto.getYear());
 
-        CarResponseDto response = toResponseDto(updated);
-        return new ResponseDto(true, "Car updated successfully", gson.toJson(response));
+            if (updated == null) {
+                return new ResponseDto(false, "Car not found", null);
+            }
+
+            CarResponseDto response = toResponseDto(updated);
+            return new ResponseDto(true, "Car updated successfully", gson.toJson(response));
+        } catch (Exception e) {
+            System.out.println("Error in handleUpdateCar: " + e.getMessage());
+            throw e;
+        }
     }
 
     // --- DELETE CAR ---
     private ResponseDto handleDeleteCar(RequestDto request) {
-        DeleteCarRequestDto dto = gson.fromJson(request.getData(), DeleteCarRequestDto.class);
+        try {
+            if (request.getToken() == null || request.getToken().isEmpty()) {
+                return new ResponseDto(false, "Unauthorized", null);
+            }
 
-        boolean deleted = carService.deleteCar(dto.getId());
-        if (!deleted)
-            return new ResponseDto(false, "Car not found or could not be deleted", null);
+            DeleteCarRequestDto dto = gson.fromJson(request.getData(), DeleteCarRequestDto.class);
+            boolean deleted = carService.deleteCar(dto.getId());
 
-        return new ResponseDto(true, "Car deleted successfully", null);
+            if (!deleted) {
+                return new ResponseDto(false, "Car not found or could not be deleted", null);
+            }
+
+            return new ResponseDto(true, "Car deleted successfully", null);
+        } catch (Exception e) {
+            System.out.println("Error in handleDeleteCar: " + e.getMessage());
+            throw e;
+        }
     }
 
     // --- LIST CARS ---
     private ResponseDto handleListCars(RequestDto request) {
-        List<Car> cars = carService.getAllCars();
-        List<CarResponseDto> carDtos = cars.stream()
-                .map(this::toResponseDto)
-                .collect(Collectors.toList());
+        try {
+            if (request.getToken() == null || request.getToken().isEmpty()) {
+                return new ResponseDto(false, "Unauthorized", null);
+            }
 
-        ListCarsResponseDto response = new ListCarsResponseDto(carDtos);
-        return new ResponseDto(true, "Cars retrieved successfully", gson.toJson(response));
+            List<Car> cars = carService.getAllCars();
+            List<CarResponseDto> carDtos = cars.stream()
+                    .map(this::toResponseDto)
+                    .collect(Collectors.toList());
+
+            ListCarsResponseDto response = new ListCarsResponseDto(carDtos);
+            return new ResponseDto(true, "Cars retrieved successfully", gson.toJson(response));
+        } catch (Exception e) {
+            System.out.println("Error in handleListCars: " + e.getMessage());
+            throw e;
+        }
     }
 
     // --- GET SINGLE CAR ---
     private ResponseDto handleGetCar(RequestDto request) {
-        DeleteCarRequestDto dto = gson.fromJson(request.getData(), DeleteCarRequestDto.class); // reusing same structure for ID
-        Car car = carService.getCarById(dto.getId());
+        try {
+            if (request.getToken() == null || request.getToken().isEmpty()) {
+                return new ResponseDto(false, "Unauthorized", null);
+            }
 
-        if (car == null)
-            return new ResponseDto(false, "Car not found", null);
+            DeleteCarRequestDto dto = gson.fromJson(request.getData(), DeleteCarRequestDto.class);
+            Car car = carService.getCarById(dto.getId());
 
-        CarResponseDto response = toResponseDto(car);
-        return new ResponseDto(true, "Car retrieved successfully", gson.toJson(response));
+            if (car == null) {
+                return new ResponseDto(false, "Car not found", null);
+            }
+
+            CarResponseDto response = toResponseDto(car);
+            return new ResponseDto(true, "Car retrieved successfully", gson.toJson(response));
+        } catch (Exception e) {
+            System.out.println("Error in handleGetCar: " + e.getMessage());
+            throw e;
+        }
     }
 
     // --- Helper method ---

@@ -10,8 +10,10 @@ import org.example.Domain.models.User;
 import org.example.DataAccess.services.AuthService;
 import org.example.Server.SessionManager;
 
-public class AuthController {
+import java.util.ArrayList;
+import java.util.List;
 
+public class AuthController {
     private final AuthService authService;
     private final Gson gson = new Gson();
 
@@ -37,65 +39,78 @@ public class AuthController {
         }
     }
 
+    // --- LOGIN ---
     private ResponseDto handleLogin(RequestDto request) {
-        LoginRequestDto loginDto = gson.fromJson(request.getData(), LoginRequestDto.class);
+        try {
+            LoginRequestDto loginDto = gson.fromJson(request.getData(), LoginRequestDto.class);
 
-        boolean success = authService.login(loginDto.getUsernameOrEmail(), loginDto.getPassword());
-        if (!success) {
-            return new ResponseDto(false, "Invalid credentials", null);
+            boolean success = authService.login(loginDto.getUsernameOrEmail(), loginDto.getPassword());
+            if (!success) {
+                return new ResponseDto(false, "Invalid credentials", null);
+            }
+
+            UserResponseDto userDto = getUserByUsername(loginDto.getUsernameOrEmail());
+            return new ResponseDto(true, "Login successful", gson.toJson(userDto));
+        } catch (Exception e) {
+            System.out.println("Error in handleLogin: " + e.getMessage());
+            throw e;
         }
-
-        String token = SessionManager.createSession(loginDto.getUsernameOrEmail());
-        UserResponseDto userDto = getUserByUsername(loginDto.getUsernameOrEmail());
-
-        return new ResponseDto(true, "Login successful", gson.toJson(userDto));
     }
 
-    private ResponseDto handleRegister(RequestDto request) throws Exception {
-        RegisterRequestDto regDto = gson.fromJson(request.getData(), RegisterRequestDto.class);
-        User user = authService.register(regDto.getUsername(), regDto.getEmail(), regDto.getPassword(), regDto.getRole());
-        UserResponseDto userDto = new UserResponseDto(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getCreatedAt().toString(),
-                user.getUpdatedAt().toString()
-        );
-        return new ResponseDto(true, "User registered", gson.toJson(userDto));
+    // --- REGISTER ---
+    private ResponseDto handleRegister(RequestDto request) {
+        try {
+            RegisterRequestDto regDto = gson.fromJson(request.getData(), RegisterRequestDto.class);
+            User user = authService.register(regDto.getUsername(), regDto.getEmail(), regDto.getPassword(), regDto.getRole());
+
+            UserResponseDto userDto = new UserResponseDto(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getCreatedAt().toString(),
+                    user.getUpdatedAt().toString()
+            );
+
+            return new ResponseDto(true, "User registered successfully", gson.toJson(userDto));
+        } catch (Exception e) {
+            System.out.println("Error in handleRegister: " + e.getMessage());
+            throw e;
+        }
     }
 
+    // --- LOGOUT ---
     private ResponseDto handleLogout(RequestDto request) {
-        if (request.getToken() != null && SessionManager.isValid(request.getToken())) {
-            SessionManager.removeSession(request.getToken());
-            return new ResponseDto(true, "Logout successful", null);
-        } else {
-            return new ResponseDto(false, "Invalid or missing token", null);
+        try {
+            if (request.getToken() != null && SessionManager.isValid(request.getToken())) {
+                SessionManager.removeSession(request.getToken());
+                return new ResponseDto(true, "Logout successful", null);
+            } else {
+                return new ResponseDto(false, "Invalid or missing token", null);
+            }
+        } catch (Exception e) {
+            System.out.println("Error in handleLogout: " + e.getMessage());
+            throw e;
         }
     }
 
+    // --- HELPER: GET USER BY USERNAME ---
     public UserResponseDto getUserByUsername(String username) {
-        User user = authService.getUserByUsername(username);
-        if (user == null) return null;
+        try {
+            User user = authService.getUserByUsername(username);
+            if (user == null) return null;
 
-        return new UserResponseDto(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getRole(),
-                user.getCreatedAt().toString(),
-                user.getUpdatedAt().toString()
-        );
-    }
-
-    // Helper for login response
-    private static class AuthResponseData {
-        private final String token;
-        private final UserResponseDto user;
-
-        public AuthResponseData(String token, UserResponseDto user) {
-            this.token = token;
-            this.user = user;
+            return new UserResponseDto(
+                    user.getId(),
+                    user.getUsername(),
+                    user.getEmail(),
+                    user.getRole(),
+                    user.getCreatedAt().toString(),
+                    user.getUpdatedAt().toString()
+            );
+        } catch (Exception e) {
+            System.out.println("Error in getUserByUsername: " + e.getMessage());
+            throw e;
         }
     }
 }

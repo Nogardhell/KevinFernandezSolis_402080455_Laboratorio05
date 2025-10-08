@@ -16,31 +16,32 @@ import org.example.Server.SocketServer;
 
 import java.util.List;
 
-
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-
         var sessionFactory = HibernateUtil.getSessionFactory();
+
+        // Inicializar servicios y controladores.
         AuthService authService = new AuthService(sessionFactory);
         AuthController authController = new AuthController(authService);
 
         CarService carService = new CarService(sessionFactory);
         CarController carController = new CarController(carService);
 
+        // Registrar los controladores aqui
         int port = 7000;
-        SocketServer server = new SocketServer(port, authController, carController);
+        SocketServer server = new SocketServer(
+                port,
+                authController,
+                carController);
 
-        // Add shutdown hook to stop the server gracefully
+        // Apagar el servidor al cerrar el programa
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             System.out.println("\nShutting down server...");
             server.stop();
         }));
 
-        // Start server (blocking call)
+        // Inicial el Servidor
         server.start();
         System.out.println("Socket server started on port " + port);
-
     }
 }
