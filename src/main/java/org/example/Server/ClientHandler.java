@@ -51,6 +51,12 @@ public class ClientHandler implements Runnable {
                         response = new ResponseDto(false, "Unknown controller", null);
                 }
 
+                // Simular procesamiento
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
                 out.println(gson.toJson(response));
             }
         } catch (IOException e) {

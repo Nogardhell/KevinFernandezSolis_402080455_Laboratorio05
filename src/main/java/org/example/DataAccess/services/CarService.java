@@ -92,6 +92,9 @@ public class CarService {
                 car.setModel(model);
                 car.setYear(year);
                 session.merge(car);
+
+                // Initialize owner
+                Hibernate.initialize(car.getOwner());
             }
 
             tx.commit();

@@ -77,7 +77,7 @@ public class CarController {
             return new ResponseDto(true, "Car updated successfully", gson.toJson(response));
         } catch (Exception e) {
             System.out.println("Error in handleUpdateCar: " + e.getMessage());
-            throw e;
+            throw new RuntimeException(e);
         }
     }
 
