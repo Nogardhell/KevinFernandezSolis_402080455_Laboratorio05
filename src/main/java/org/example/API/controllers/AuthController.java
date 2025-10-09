@@ -8,10 +8,6 @@ import org.example.Domain.dtos.auth.RegisterRequestDto;
 import org.example.Domain.dtos.auth.UserResponseDto;
 import org.example.Domain.models.User;
 import org.example.DataAccess.services.AuthService;
-import org.example.Server.SessionManager;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class AuthController {
     private final AuthService authService;
@@ -82,12 +78,7 @@ public class AuthController {
     // --- LOGOUT ---
     private ResponseDto handleLogout(RequestDto request) {
         try {
-            if (request.getToken() != null && SessionManager.isValid(request.getToken())) {
-                SessionManager.removeSession(request.getToken());
-                return new ResponseDto(true, "Logout successful", null);
-            } else {
-                return new ResponseDto(false, "Invalid or missing token", null);
-            }
+            return new ResponseDto(true, "Logout successful", null);
         } catch (Exception e) {
             System.out.println("Error in handleLogout: " + e.getMessage());
             throw e;

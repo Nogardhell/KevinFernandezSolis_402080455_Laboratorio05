@@ -2,8 +2,6 @@ package org.example.Server;
 
 import org.example.API.controllers.AuthController;
 import org.example.API.controllers.CarController;
-import org.example.Domain.models.Car;
-
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
