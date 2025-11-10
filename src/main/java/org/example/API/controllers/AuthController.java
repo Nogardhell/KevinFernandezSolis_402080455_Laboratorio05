@@ -34,7 +34,6 @@ public class AuthController {
             return new ResponseDto(false, e.getMessage(), null);
         }
     }
-
     // --- LOGIN ---
     private ResponseDto handleLogin(RequestDto request) {
         try {
@@ -64,8 +63,8 @@ public class AuthController {
                     user.getUsername(),
                     user.getEmail(),
                     user.getRole(),
-                    user.getCreatedAt().toString(),
-                    user.getUpdatedAt().toString()
+                    user.getCreatedAt(),
+                    user.getUpdatedAt()
             );
 
             return new ResponseDto(true, "User registered successfully", gson.toJson(userDto));
@@ -96,8 +95,8 @@ public class AuthController {
                     user.getUsername(),
                     user.getEmail(),
                     user.getRole(),
-                    user.getCreatedAt().toString(),
-                    user.getUpdatedAt().toString()
+                    user.getCreatedAt(),
+                    user.getUpdatedAt()
             );
         } catch (Exception e) {
             System.out.println("Error in getUserByUsername: " + e.getMessage());

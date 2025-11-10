@@ -2,6 +2,7 @@ package org.example.Server;
 
 import org.example.API.controllers.AuthController;
 import org.example.API.controllers.CarController;
+import org.example.API.controllers.MantController;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -14,11 +15,13 @@ public class SocketServer {
     private final int port;
     private final AuthController authController;
     private final CarController carController;
+    private final MantController mantenimientoController;
     private ServerSocket serverSocket;
     private final List<ClientHandler> activeClients = new CopyOnWriteArrayList<>();
     private MessageBroadcaster messageBroadcaster;
 
-    public SocketServer(int port, AuthController authController, CarController carController) {
+    public SocketServer(int port, AuthController authController, CarController carController, MantController mantenimientoController) {
+         this.mantenimientoController = mantenimientoController;
         this.port = port;
         this.authController = authController;
         this.carController = carController;
@@ -45,7 +48,7 @@ public class SocketServer {
                 System.out.println("[SocketServer] New client connected from " + clientSocket.getInetAddress());
 
                 // Track this client
-                ClientHandler handler = new ClientHandler(clientSocket, authController, carController, this);
+                ClientHandler handler = new ClientHandler(clientSocket, authController, carController, mantenimientoController,this);
                 activeClients.add(handler);
 
                 // Give it a descriptive thread name

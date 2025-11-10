@@ -2,9 +2,11 @@ package org.example;
 
 import org.example.API.controllers.AuthController;
 import org.example.API.controllers.CarController;
+import org.example.API.controllers.MantController;
 import org.example.DataAccess.services.AuthService;
 import org.example.DataAccess.services.CarService;
 import org.example.DataAccess.HibernateUtil;
+import org.example.DataAccess.services.MantService;
 import org.example.Server.SocketServer;
 import org.example.Server.MessageBroadcaster;
 
@@ -19,7 +21,10 @@ public class Main {
         CarService carService = new CarService(sessionFactory);
         CarController carController = new CarController(carService);
 
-        var createUsers = true;
+        MantService mantService = new MantService(HibernateUtil.getSessionFactory());
+        MantController mantController = new MantController(mantService);
+
+        var createUsers = false;
         if(createUsers) {
             authService.register("user", "email@example.com", "pass", "USER");
             authService.register("otro", "otro@example.com", "pass", "USER");
@@ -31,7 +36,8 @@ public class Main {
         SocketServer requestServer = new SocketServer(
                 requestPort,
                 authController,
-                carController);
+                carController,
+                mantController);
 
         // Server for chat/broadcasting (persistent connections)
         int messagePort = 7001;

@@ -151,8 +151,8 @@ public class CarController {
                 car.getOwner().getUsername(),
                 car.getOwner().getEmail(),
                 car.getOwner().getRole(),
-                car.getOwner().getCreatedAt().toString(),
-                car.getOwner().getUpdatedAt().toString()
+                car.getOwner().getCreatedAt(),
+                car.getOwner().getUpdatedAt()
         );
 
         return new CarResponseDto(
