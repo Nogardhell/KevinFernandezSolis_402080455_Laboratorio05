@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+<<<<<<< HEAD
     <file url="file://$PROJECT_DIR$/JavaMVCBackEnd/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/JavaMVCBackEnd/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/JavaMVCFrontEnd/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/JavaMVCFrontEnd/src/main/resources" charset="UTF-8" />
+=======
+    <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+>>>>>>> 8c98c52ff2245f7e896d44e28deeb8c0bfefdfa2
   </component>
 </project>
